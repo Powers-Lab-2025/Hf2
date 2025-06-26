@@ -114,7 +114,7 @@ class SimulationPath:
         """
 
         if action_code == 1:
-            self.spin_off()
+            self.spin_off(focus_info=self.focus_info if hasattr(self, 'focus_info') else None)
             return True
         elif action_code == 2:
             self.stop_as_failed()
@@ -131,7 +131,7 @@ class SimulationPath:
             return True
 
 
-    def spin_off(self):
+    def spin_off(self, focus_info=None):
         """
         Creates a new simulation path directory by copying the current one and incrementing
         the suffix (e.g., A5-1 -> A5-1-1). Launches a new TINKER simulation in the new directory.
@@ -173,6 +173,15 @@ class SimulationPath:
             if self.verbose:
                 print(f"[SPINOFF] Launching new TINKER instance in {new_label}")
             os.system(hf2.config.TINKER_START_COMMAND.format(path=new_path))
+
+        if focus_info is not None:
+            frag_idx, dist, col, anchor_xy = focus_info
+            focus_path = new_path / "molecule.focus"
+            with open(focus_path, "w") as f:
+                f.write(f"{frag_idx},{col},{dist:.4f},{anchor_xy[0]:.4f},{anchor_xy[1]:.4f}\n")
+            if self.verbose:
+                print(f"[FOCUS] Wrote molecule.focus to {focus_path}")
+
 
 
 

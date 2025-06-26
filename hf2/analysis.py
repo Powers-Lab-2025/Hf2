@@ -11,6 +11,7 @@ from hf2.config import (
     MAX_SPINOFFS_PER_STEP,
     NORMALIZE_ATOM_NAMES,
 )
+import hf2.config
 
 frame_counter = 0
 
@@ -51,13 +52,21 @@ def analysis(xyz_dir):
         focus_result = check_focus(xyz_dir, frags_latest)
         if focus_result is not None:
             return focus_result
-
+    
         spinoff_targets = check_hop(frags_latest, frags_prev, xyz_dir)
         if spinoff_targets:
-            for frag_idx, dist, col, anchor_xy in spinoff_targets:
-                write_focus_file(xyz_dir, frag_idx, col, dist, anchor_xy)
-                log_action(f"Spinoff: Fragment {frag_idx} is {dist:.2f} A from column {col}")
+            frag_idx, dist, col, anchor_xy = spinoff_targets[0]
+            coms_latest = np.array([frag.center_of_mass() for frag in frags_latest])
+            box = frags_latest[0].dimensions[:3]
+            anchors_prev, _ = ar.guess_column_positions(coms_latest, box, return_noise=True)
+            anchor_xy = anchors_prev[col]
+            
+            # Store info for conductor to pass into new directory
+            xyz_dir.parent._conductor.focus_info = (frag_idx, dist, col, anchor_xy)
+            
+            log_action(f"Spinoff: Molecule {frag_idx} is {dist:.2f} A from column {col}")
             return 1
+
 
     return 4
 
