@@ -28,7 +28,7 @@ def analysis(xyz_dir):
     xyz_dir = Path(xyz_dir)
     traj_files = sorted(xyz_dir.glob("*converted.xyz"), key=os.path.getmtime)
     if len(traj_files) < 2:
-        return 4  # not enough frames to do anything
+        return 4, None  # not enough frames to do anything
 
     frame_counter += 1
     latest = traj_files[-1]
@@ -46,12 +46,12 @@ def analysis(xyz_dir):
         fail = check_failure(frags_latest)
         if fail:
             log_action("Failure: S < 0.6")
-            return 2
+            return 2, None
 
     if frame_counter % HOP_CHECK_INTERVAL == 0:
         focus_result = check_focus(xyz_dir, frags_latest)
         if focus_result is not None:
-            return focus_result
+            return focus_result, None
     
         spinoff_targets = check_hop(frags_latest, frags_prev, xyz_dir)
         if spinoff_targets:
@@ -65,10 +65,11 @@ def analysis(xyz_dir):
             xyz_dir.parent._conductor.focus_info = (frag_idx, dist, col, anchor_xy)
             
             log_action(f"Spinoff: Molecule {frag_idx} is {dist:.2f} A from column {col}")
-            return 1
+            return 1, (frag_idx, dist, col, anchor_xy)
 
 
-    return 4
+
+    return 4, None
 
 
 def check_failure(frags):

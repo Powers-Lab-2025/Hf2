@@ -105,7 +105,10 @@ class SimulationPath:
             print(f"[ERROR] Analysis failed for {self.label}: {e}")
             return True
 
-    def take_action(self, action_code):
+    def take_action(self, action_code, focus_info):
+        if action_code == 1:
+            self.spin_off(focus_info)
+
         """
         Executes one of the four allowed simulation actions based on the analysis result.
 
