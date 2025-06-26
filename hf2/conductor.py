@@ -36,7 +36,8 @@ class SimulationPath:
         if self.verbose:
             print(f"[TINKER START] Running in {self.path}:\n  {cmd}")
         
-        os.system(f"cd {self.path} && {cmd}")
+        os.chdir(self.path) # os's methods are likely more portable than direct system calls
+        os.system(f"{cmd}") # it is also a good idea to not double up commands
 
     def check_inactivity(self):
         """
