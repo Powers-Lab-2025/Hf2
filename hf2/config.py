@@ -69,10 +69,10 @@ TINKER_PREFIX = REF_XYZ_PREFIX
 ORIENT_FAIL_INTERVAL = 10
 
 # How often (in frames) to check for fragment hop/spinoff opportunities
-HOP_CHECK_INTERVAL = 4
+HOP_CHECK_INTERVAL = 1
 
-# Fragment is considered to be "hopping" if it's farther than this factor × average inter-column distance
-HOP_DISTANCE_FACTOR = 0.4  # k value; adjust as needed
+# Fragment is considered to be "hopping" if it's farther than this factor x average inter-column distance
+HOP_DISTANCE_FACTOR = 0.5  # k value; adjust as needed
 
 # Max number of fragments to spin off in one analysis cycle
 MAX_SPINOFFS_PER_STEP = 2  # e.g., spin off the 2 farthest fragments
