@@ -54,8 +54,8 @@ def analysis(xyz_dir):
 
         spinoff_targets = check_hop(frags_latest, frags_prev, xyz_dir)
         if spinoff_targets:
-            for frag_idx, dist, col in spinoff_targets:
-                write_focus_file(xyz_dir, frag_idx, col, dist)
+            for frag_idx, dist, col, anchor_xy in spinoff_targets:
+                write_focus_file(xyz_dir, frag_idx, col, dist, anchor_xy)
                 log_action(f"Spinoff: Fragment {frag_idx} is {dist:.2f} A from column {col}")
             return 1
 
